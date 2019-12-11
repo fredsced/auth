@@ -1,7 +1,10 @@
 package fr.formation.jwtauthserver;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -12,6 +15,7 @@ import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
 import fr.formation.jwtauthserver.services.CustomClientDetailsService;
 import fr.formation.jwtauthserver.services.CustomUserDetailsService;
@@ -22,6 +26,15 @@ import fr.formation.jwtauthserver.services.CustomUserDetailsService;
 @Configuration
 @EnableAuthorizationServer
 public class JwtAuthServerConfig extends AuthorizationServerConfigurerAdapter {
+
+    @Value("${jwt-auth-server.keyStore}")
+    private String keyStore;
+
+    @Value("${jwt-auth-server.keyPass}")
+    private String keyPass;
+
+    @Value("${jwt-auth-server.keyAlias}")
+    private String keyAlias;
 
     private final AuthenticationManager authenticationManagerBean;
 
@@ -52,7 +65,10 @@ public class JwtAuthServerConfig extends AuthorizationServerConfigurerAdapter {
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
 	JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-	converter.setSigningKey("my-symmetric-key"); // symmetric key
+	Resource resource = new ClassPathResource(keyStore);
+	char[] password = keyPass.toCharArray();
+	KeyStoreKeyFactory factory = new KeyStoreKeyFactory(resource, password);
+	converter.setKeyPair(factory.getKeyPair(keyAlias));
 	return converter;
     }
 
@@ -86,6 +102,8 @@ public class JwtAuthServerConfig extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(AuthorizationServerSecurityConfigurer configurer)
 	    throws Exception {
+	// Indicate that an authenticated client can get the public key
+	configurer.tokenKeyAccess("isAuthenticated()");
 	// To decode the access token, denied by default
 	// Indicate that an authenticated client can check tokens
 	configurer.checkTokenAccess("isAuthenticated()");

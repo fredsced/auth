@@ -1,7 +1,15 @@
 package fr.formation.jwtresourceserver;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -17,6 +25,12 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class JwtResourceServerConfig extends ResourceServerConfigurerAdapter {
 
+    @Value("${jwt-resource-server.resourceId}")
+    private String resourceId;
+
+    @Value("${jwt-resource-server.publicKey}")
+    private String publicKey;
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
 	// Disable CSRF, no need with JWT if not cookie-based
@@ -30,7 +44,7 @@ public class JwtResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(ResourceServerSecurityConfigurer config) {
 	config.tokenServices(tokenServices());
-	config.resourceId("jwt-resource"); // I am this resource
+	config.resourceId(resourceId); // I am this resource server
     }
 
     @Bean
@@ -41,8 +55,14 @@ public class JwtResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
 	JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-	// Same/compatible key as authorization server
-	converter.setSigningKey("my-symmetric-key");
+	Resource resource = new ClassPathResource(publicKey);
+	String publicKey = null;
+	try (InputStream is = resource.getInputStream()) {
+	    publicKey = IOUtils.toString(is, Charset.defaultCharset());
+	} catch (IOException ex) {
+	    throw new RuntimeException(ex);
+	}
+	converter.setVerifierKey(publicKey);
 	return converter;
     }
 

@@ -9,13 +9,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/public")
 public class PublicController {
 
-    @GetMapping
-    protected String welcome(Authentication authentication) {
-	return "Public welcome! Authenticated=" + (authentication != null);
-    }
-
-    @GetMapping("/noInfo")
-    protected String noInfo() {
-	return "Public welcome!";
+    @GetMapping("/me")
+    protected Authentication me(Authentication authentication) {
+	return authentication;
     }
 }
