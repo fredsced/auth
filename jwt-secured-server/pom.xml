@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.2.RELEASE</version>
+		<version>2.2.7.RELEASE</version>
 		<relativePath />
 	</parent>
 	<groupId>fr.formation</groupId>
@@ -27,15 +27,20 @@
 		<dependency>
 			<groupId>org.springframework.security.oauth.boot</groupId>
 			<artifactId>spring-security-oauth2-autoconfigure</artifactId>
-			<version>2.2.2.RELEASE</version>
+			<version>2.2.7.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>mysql</groupId> -->
+<!-- 			<artifactId>mysql-connector-java</artifactId> -->
+<!-- 			<scope>runtime</scope> -->
+<!-- 		</dependency> -->
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
