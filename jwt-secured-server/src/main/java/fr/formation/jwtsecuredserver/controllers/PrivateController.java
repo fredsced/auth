@@ -12,7 +12,7 @@ import fr.formation.jwtsecuredserver.config.ResourceServerConfig;
  * @see ResourceServerConfig#configure(HttpSecurity)
  */
 @RestController
-@RequestMapping("/private")
+@RequestMapping("/private") // "/api/private/*"
 public class PrivateController {
 
     /**
