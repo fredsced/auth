@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon client auth2</title>
+</head>
+
+<body>
+    <div id="login" style="width:600px; margin:30px auto; ">
+        <button id="localStorageTest">Test if local storage is available</button>
+        <br>
+        <br>
+        <form id="loginForm">
+            <input type="hidden" name="client_id" value="my-client-id" id="clientId">
+            <input type="hidden" name="grant_type" value="password" id="grantType">
+            <label for="username">Username: </label><input type="text" name="username" id="username"><br>
+            <br>
+            <label for="password">Password: </label><input type="password" name="password" id="password"><br>
+
+
+            <br>
+            <button type="submit">Login</button>
+        </form>
+        <br><br>
+        <label for="token">Access token</label>
+        <textarea name="token" id="token" cols="80" rows="30"></textarea>
+    </div>
+    <script src="./scripts/main.js"></script>
+</body>
+
+</html>
