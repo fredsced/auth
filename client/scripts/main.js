@@ -2,16 +2,6 @@ const token = document.querySelector('#token');
 
 const loginForm = document.querySelector('#loginForm');
 
-testLocalStorage.addEventListener('clic',
-    function (e) {
-        if (storageAvailable('localStorage')) {
-            alert('localstorage available')
-        }
-        else {
-            alert('localstorage not available')
-        }
-    }
-)
 
 
 
@@ -19,54 +9,61 @@ loginForm.addEventListener('submit',
     function (e) {
         e.preventDefault();
         const xhr = new XMLHttpRequest();
-        xhr.responseText = 'json';
+        xhr.responseType = 'json';
         xhr.onload = function () {
             const code = xhr.status;
             Window.sessionStorage
             if (code == 200) {
-                accessToken.value = xhr.response.access_token
+                const datas = xhr.response;
+                token.value = datas.access_token;
+                localStorage.setItem('access_token', datas.access_token);
             } else if (code == 400) {
-                alert('Bad request error 400: ', xhr.response.error);
+                alert(xhr.response.error_description);
             } else {
                 alert('Other error: ', code)
             }
         }
         xhr.onerror = function () {
-            alert('XHR error');
         }
         xhr.open('POST', 'http://localhost:9090/oauth/token');
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
 
         let data = "username=" + document.querySelector('#username').value;
         data += "&password=" + document.querySelector('#password').value;
         data += "&client_id=" + document.querySelector('#clientId').value;
         data += "&grant_type=" + document.querySelector('#grantType').value;
 
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.send(data);
-    
 
-    }, false);
+    },
+    false
+);
+//const publicHello = document.querySelector('#publicHello');
+const links = document.querySelectorAll('#publicHello, #userInfo, #privateHelloUser, #privateHelloAdmin, #privateAuthenticated');
+const base_url = 'http://localhost:9090';
 
-    function storageAvailable(type) {
-        try {
-            var storage = window[type],
-                x = '__storage_test__';
-            storage.setItem(x, x);
-            storage.removeItem(x);
-            return true;
+links.forEach(link => {
+    link.addEventListener('click', _e => {
+        const xhr = new XMLHttpRequest();
+        xhr.onload = () => {
+            const st = xhr.status;
+            if (st == 200) {
+                console.log(xhr.response);
+            } else if (st == 400) {
+                alert('status 400 bad request' + xhr.response.error_description);
+            } else {
+                alert('Bad error, status code: ' + st)
+            }
         }
-        catch(e) {
-            return e instanceof DOMException && (
-                // everything except Firefox
-                e.code === 22 ||
-                // Firefox
-                e.code === 1014 ||
-                // test name field too, because code might not be present
-                // everything except Firefox
-                e.name === 'QuotaExceededError' ||
-                // Firefox
-                e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-                // acknowledge QuotaExceededError only if there's something already stored
-                storage.length !== 0;
-        }
+        xhr.onerror = () => { alert('XHR error') };
+        xhr.open('GET', base_url + link.text);
+        xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('access_token'));
+        xhr.send(null);
+
     }
+    );
+})
+
+
+

@@ -8,26 +8,37 @@
 </head>
 
 <body>
+    <h2>Login</h2>
     <div id="login" style="width:600px; margin:30px auto; ">
-        <button id="localStorageTest">Test if local storage is available</button>
-        <br>
-        <br>
         <form id="loginForm">
-            <input type="hidden" name="client_id" value="my-client-id" id="clientId">
+            <input type="hidden" name="client_id" value="my-client-app" id="clientId">
             <input type="hidden" name="grant_type" value="password" id="grantType">
-            <label for="username">Username: </label><input type="text" name="username" id="username"><br>
+            <label for="username">Username: </label><input value="" id="username" type="text" name="username">
             <br>
-            <label for="password">Password: </label><input type="password" name="password" id="password"><br>
-
-
+            <br>
+            <label for="password">Password: </label><input value="" id="password" type="password"  name="password">
+            <br>
             <br>
             <button type="submit">Login</button>
         </form>
         <br><br>
         <label for="token">Access token</label>
-        <textarea name="token" id="token" cols="80" rows="30"></textarea>
+        <textarea name="token" id="token" cols="80" rows="10"></textarea>
+    </div>
+    <h2>EndPoints</h2>
+    <div  style="width:600px; margin:30px auto; ">
+        
+        <a href="#" id="publicHello">/api/public/hello</a><br>
+        <a href="#" id="userInfo">/api/userInfo</a><br>
+        <a href="#" id="privateHelloUser">/api/private/user</a><br>
+        <a href="#" id="privateHelloAdmin">/api/private/admin</a><br>
+        <a href="#" id="privateAuthenticated">/api/private/authenticated</a>
+
     </div>
     <script src="./scripts/main.js"></script>
+
+   
+           
 </body>
 
 </html>

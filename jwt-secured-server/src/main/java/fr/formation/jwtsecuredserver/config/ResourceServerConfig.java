@@ -1,6 +1,7 @@
 package fr.formation.jwtsecuredserver.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -28,6 +29,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 	http.httpBasic().disable().csrf().disable().cors().disable()
 		.sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+			.authorizeRequests().antMatchers(HttpMethod.OPTIONS).permitAll().and()
 		// "/api/public/**" for anyone even anonymous
 		.authorizeRequests().antMatchers("/api/public/**").permitAll()
 		/*
